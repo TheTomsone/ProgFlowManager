@@ -20,7 +20,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IDataService, DataService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<ISoftwareCategoryService, SoftwareCategoryService>();
+builder.Services.AddScoped<ISoftwareLanguageService, SoftwareLanguageService>();
 builder.Services.AddScoped<ISoftwareService, SoftwareService>();
 builder.Services.AddScoped<IUserService, UserService>();
 

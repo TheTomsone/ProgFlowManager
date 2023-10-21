@@ -17,13 +17,13 @@ namespace ProgFlowManager.API.Controllers
     public class SoftwareController : ControllerBase
     {
         private readonly IDataService _dataService;
-        private readonly ISoftwareService _programService;
-        private readonly ISoftwareCategoryService _programCategoryService;
+        private readonly ISoftwareService _softwareService;
+        private readonly ISoftwareCategoryService _softwareCategoryService;
         private readonly ICategoryService _categoryService;
         public SoftwareController(ISoftwareService programService, ISoftwareCategoryService programCategoryService, ICategoryService categoryService, IDataService dataService)
         {
-            _programService = programService;
-            _programCategoryService = programCategoryService;
+            _softwareService = programService;
+            _softwareCategoryService = programCategoryService;
             _categoryService = categoryService;
             _dataService = dataService;
 
@@ -35,7 +35,7 @@ namespace ProgFlowManager.API.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try { if (_dataService.Create(form.ToModel<Data, SoftwareForm>()) &&
-                        _programService.Create(form.ToModel<Software, SoftwareForm>(_dataService.GetLastId())))
+                        _softwareService.Create(form.ToModel<Software, SoftwareForm>(_dataService.GetLastId())))
                             return Ok(); } 
             catch (Exception ex) { return BadRequest(ex.Message); }
 
@@ -61,7 +61,7 @@ namespace ProgFlowManager.API.Controllers
             if (!ModelState.IsValid) return NotFound(ModelState);
 
             try { if (_dataService.Update(form.ToModel<Data, SoftwareForm>(id)) &&
-                        _programService.Update(form.ToModel<Software, SoftwareForm>(id)))
+                        _softwareService.Update(form.ToModel<Software, SoftwareForm>(id)))
                             return Ok(); }
             catch (Exception ex) { return BadRequest(ex.Message); }
 
@@ -71,7 +71,7 @@ namespace ProgFlowManager.API.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            try { if (_programService.Delete(id) && _dataService.Delete(id)) return Ok(); }
+            try { if (_softwareService.Delete(id) && _dataService.Delete(id)) return Ok(); }
             catch (Exception ex) { return BadRequest(ex.Message); }
 
             return NotFound();
@@ -79,12 +79,12 @@ namespace ProgFlowManager.API.Controllers
 
         private IEnumerable<SoftwareDTO> GetSoftwareDTOs()
         {
-            IEnumerable<SoftwareDTO> softwareDTOs = _programService.Models.ToDTO<SoftwareDTO, Software>()
+            IEnumerable<SoftwareDTO> softwareDTOs = _softwareService.Models.ToDTO<SoftwareDTO, Software>()
                                                                     .MergeWith(_dataService.Models.ToDTO<SoftwareDTO, Data>());
 
             foreach (SoftwareDTO software in softwareDTOs)
             {
-                IEnumerable<SoftwareCategory> dalList = _programCategoryService.GetAllById<Software>(software.Id);
+                IEnumerable<SoftwareCategory> dalList = _softwareCategoryService.GetAllById<Software>(software.Id);
                 List<CategoryDTO> categories = new();
 
                 foreach (SoftwareCategory programCat in dalList)

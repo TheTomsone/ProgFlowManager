@@ -53,14 +53,18 @@ namespace ProgFlowManager.API.Controllers
         [HttpDelete]
         public IActionResult Delete([FromBody] IEnumerable<SoftwareCategoryForm> forms)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             try { foreach (SoftwareCategoryForm form in forms)
-                    if (!_softwareCategoryService.DeleteRelation(form.ToModel<SoftwareCategory, SoftwareCategoryForm>())) return NotFound(); }
+                    if (_softwareCategoryService.DeleteRelation(form.ToModel<SoftwareCategory, SoftwareCategoryForm>()))
+                        return Ok();
+            }
             catch (Exception ex) { return BadRequest(ex.Message); }
 
-            return Ok();
+            return NotFound();
         }
         [HttpDelete("bySoftware/{id}")]
-        public IActionResult DeleteByIdSoftware(int id)
+        public IActionResult DeleteBySoftware(int id)
         {
             try { if (_softwareCategoryService.Delete(id)) return Ok(); }
             catch (Exception ex) { return BadRequest(ex.Message); }

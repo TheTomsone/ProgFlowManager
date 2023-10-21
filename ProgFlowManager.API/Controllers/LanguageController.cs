@@ -9,26 +9,26 @@ namespace ProgFlowManager.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class LanguageController : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
+        private readonly ILanguageService _languageService;
 
-        public CategoryController(ICategoryService categoryService)
+        public LanguageController(ILanguageService languageService)
         {
-            _categoryService = categoryService;
+            _languageService = languageService;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_categoryService.GetAll().ToDTO<CategoryDTO, Category>());
+            return Ok(_languageService.GetAll().ToDTO<LanguageDTO, Language>());
         }
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            if (_categoryService.GetById(id) is null) return NotFound();
+            if (_languageService.GetById(id) is null) return NotFound();
 
-            return Ok(_categoryService.GetById(id).ToDTO<CategoryDTO, Category>());
+            return Ok(_languageService.GetById(id).ToDTO<LanguageDTO, Language>());
         }
     }
 }
