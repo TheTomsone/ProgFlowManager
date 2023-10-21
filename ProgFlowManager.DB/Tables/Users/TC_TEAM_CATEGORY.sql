@@ -1,0 +1,5 @@
+﻿CREATE TABLE [dbo].[TC_TEAM_CATEGORY]
+(
+	[tc_id]		INT			NOT NULL PRIMARY KEY,
+	[tc_label]	VARCHAR(50) NOT NULL UNIQUE,
+)
