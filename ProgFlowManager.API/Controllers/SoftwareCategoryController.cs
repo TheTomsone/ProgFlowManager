@@ -18,13 +18,12 @@ namespace ProgFlowManager.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] IEnumerable<SoftwareCategoryForm> forms)
+        public IActionResult Create([FromBody] SoftwareCategoryForm form)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            try { foreach (SoftwareCategoryForm form in forms)
-                    if (_softwareCategoryService.Create(form.ToModel<SoftwareCategory, SoftwareCategoryForm>()))
-                        return Ok(); }
+            try { if (_softwareCategoryService.Create(form.ToModel<SoftwareCategory, SoftwareCategoryForm>()))
+                    return Ok(); }
             catch (Exception ex) { return BadRequest(ex.Message); }
 
             return BadRequest();
@@ -51,13 +50,12 @@ namespace ProgFlowManager.API.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Delete([FromBody] IEnumerable<SoftwareCategoryForm> forms)
+        public IActionResult Delete([FromBody] SoftwareCategoryForm form)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            try { foreach (SoftwareCategoryForm form in forms)
-                    if (_softwareCategoryService.DeleteRelation(form.ToModel<SoftwareCategory, SoftwareCategoryForm>()))
-                        return Ok();
+            try { if (_softwareCategoryService.DeleteRelation(form.ToModel<SoftwareCategory, SoftwareCategoryForm>()))
+                    return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
 

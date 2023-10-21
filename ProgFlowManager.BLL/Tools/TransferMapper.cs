@@ -52,7 +52,7 @@ namespace ProgFlowManager.BLL.Tools
             return model;
         }
         public static TModelDTO ToDTO<TModelDTO, TModel>(this TModel model)
-            where TModelDTO : class, new()
+            where TModelDTO : IModelDTO, new()
             where TModel : IModelDAL
         {
             TModelDTO dto = new();
@@ -73,15 +73,11 @@ namespace ProgFlowManager.BLL.Tools
             return dto;
         }
         public static IEnumerable<TModelDTO> ToDTO<TModelDTO, TModel>(this IEnumerable<TModel> models)
-            where TModelDTO : class, new()
+            where TModelDTO : IModelDTO, new()
             where TModel : IModelDAL
         {
-            List<TModelDTO> list = new();
-
             foreach (TModel model in models)
-                list.Add(model.ToDTO<TModelDTO, TModel>());
-
-            return list;
+                yield return model.ToDTO<TModelDTO, TModel>();
         }
 
         public static IEnumerable<TModel> MergeWith<TModel>(this IEnumerable<TModel> source, IEnumerable<TModel> other)
@@ -109,53 +105,96 @@ namespace ProgFlowManager.BLL.Tools
                 yield return item;
             }
         }
+
+        /// <summary>
+        /// This function takes a list of source models of type <typeparamref name="TModel" /> and merges related list of type <typeparamref name="TRelated" /> with an association of type <typeparamref name="TRelation" /> with the base model of type <typeparamref name="TRelatedModel" />.
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <typeparam name="TRelated"></typeparam>
+        /// <typeparam name="TRelation"></typeparam>
+        /// <typeparam name="TRelatedModel"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="relatedEnumerableSelector"></param>
+        /// <param name="relationFetcher"></param>
+        /// <param name="relationToRelatedId"></param>
+        /// <param name="relatedFetcher"></param>
+        /// <returns></returns>
+        public static IEnumerable<TModel> MergeData<TModel, TRelated, TRelation, TRelatedModel>(
+            this IEnumerable<TModel> source,
+            Func<TModel, List<TRelated>> relatedEnumerableSelector,
+            Func<int, IEnumerable<TRelation>> relationFetcher,
+            Func<TRelation, int> relationToRelatedId,
+            Func<int, TRelatedModel> relatedFetcher)
+            where TModel : IModelDTO
+            where TRelated : IModelDTO, new()
+            where TRelatedModel : IModelDAL
+        {
+            foreach (TModel item in source)
+            {
+                List<TRelated> relateds = relatedEnumerableSelector(item);
+                IEnumerable<TRelation> relations = relationFetcher(item.Id);
+
+                foreach (TRelation relation in relations)
+                {
+                    int relatedId = relationToRelatedId(relation);
+                    relateds.Add(relatedFetcher(relatedId).ToDTO<TRelated, TRelatedModel>());
+                }
+
+                yield return item;
+            }
+        }
     }
 }
 
 
 
 
-
-
-
-
-
-/*
-
-        public static TModelDTO ToDTO<TModelDTO, TModel>(this TModel model)
-            where TModelDTO : class, new()
-            where TModel : IModelDAL
-        {
-            TModelDTO dto = model.ToDTO<TModelDTO, TModel>();
-            PropertyInfo[] props = typeof(TModelDTO).GetProperties();
-            object? value;
-
-            if (typeof(DataDTO).IsAssignableFrom(typeof(TModelDTO)))
-            {
-                Data dataDTO = dataService.GetById(model.Id);
-                foreach (PropertyInfo prop in props)
-                {
-                    PropertyInfo dataProp = typeof(Data).GetProperty(prop.Name);
-                    if (dataProp is not null && dataProp.PropertyType == prop.PropertyType)
-                    {
-                        value = dataProp.GetValue(dataDTO);
-                        if (value is not null) prop.SetValue(dto, value);
-                    }
-                    else if (prop.GetValue(dto) is IEnumerable<CategoryDTO>)
-                    {
-                        IEnumerable<SoftwareCategory> dalList = programCategoryService.GetById<Software>(model.Id);
-                        List<CategoryDTO> categories = new();
-
-                        foreach (SoftwareCategory programCat in dalList)
-                            categories.Add(categoryService.GetById(programCat.CategoryId).ToDTO<CategoryDTO, Category>());
-
-                        prop.SetValue(dto, categories);
-                    }
-                }
-            }
-
-            return dto;
-        }
-
-
- */
+/// <summary>
+/// Merges related associations into a list of enriched source models.
+/// </summary>
+/// <remarks>
+/// <para>
+/// This function takes a list of source models of type <typeparamref name="TModel" /> and merges related associations with these models.
+/// Relations are extracted using the selection function <paramref name="relatedEnumerableSelector" />,
+/// then retrieved and enriched from other sources using the specified functions.
+/// </para>
+/// <para>
+/// The function iterates through the list of source models, and for each source model, it extracts related associations using the
+/// <paramref name="relatedEnumerableSelector" /> function. It then retrieves related associations using the
+/// <paramref name="relationFetcher" /> function, identifies associated model objects from these relations using the
+/// <paramref name="relationToRelatedId" /> function, and finally enriches the source models with these model objects using
+/// the <paramref name="relatedFetcher" /> function.
+/// </para>
+/// <para>
+/// The function takes into account the following generic constraints:
+/// - <typeparam name="TModel">: The type of the source model, which must implement the <see cref="IModelDTO" /> interface.
+/// - <typeparam name="TRelated">: The type of the relation model, which must implement the <see cref="IModelDTO" /> interface
+///   and must have a parameterless default constructor.
+/// - <typeparam name="TRelation">: The type of the relation, which will be used to extract relations.
+/// - <typeparam name="TRelatedModel">: The type of the model associated with relations, which must implement the <see cref="IModelDAL" /> interface.
+/// </para>
+/// <para>
+/// The result of the function is a list of enriched models of type <typeparamref name="TModel" /> with their associated relations.
+/// Each source model in the resulting list will now have enriched relations in their corresponding properties.
+/// </para>
+/// </remarks>
+/// <typeparam name="TModel">The type of source model.</typeparam>
+/// <typeparam name="TRelated">The type of relation model.</typeparam>
+/// <typeparam name="TRelation">The type of relation.</typeparam>
+/// <typeparam name="TRelatedModel">The type of the model associated with relations.</typeparam>
+/// <param name="source">The list of source models from which relations will be merged.</param>
+/// <param name="relatedEnumerableSelector">
+///     A function that extracts related associations associated with a source model.
+/// </param>
+/// <param name="relationFetcher">
+///     A function to retrieve related associations based on the identifier of the source model.
+/// </param>
+/// <param name="relationToRelatedId">
+///     A function that extracts the identifier of the relation from the relation object.
+/// </param>
+/// <param name="relatedFetcher">
+///     A function to retrieve the associated model object with relations based on its identifier.
+/// </param>
+/// <returns>
+/// A list of enriched models with their associated relations.
+/// </returns>

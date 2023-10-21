@@ -74,8 +74,6 @@
     <Build Include="Tables\Users\T_TEAM.sql" />
     <Build Include="Tables\Users\TC_TEAM_CATEGORY.sql" />
     <Build Include="Tables\Users\TUR_TEAM_USER_ROLE.sql" />
-    <Build Include="Tables\Users\R_ROLE.sql" />
-    <Build Include="Tables\Users\A_AUTHORIZED.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.DefaultData.sql" />

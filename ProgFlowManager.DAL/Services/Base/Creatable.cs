@@ -28,7 +28,6 @@ namespace ProgFlowManager.DAL.Services.Base
             {
                 if (Tablename == "DATA" && props[i].Name == "Id") continue;
                 if (props[i].GetValue(model) is null) continue;
-                Console.WriteLine(props[i].GetValue(model));
 
                 sb.Append($"[{Prefix.ToLower()}_{props[i].Name.UnderscoreBetweenLowerUpper().ToLower()}]");
                 if (i < props.Length - 1) sb.Append(',');
@@ -38,7 +37,6 @@ namespace ProgFlowManager.DAL.Services.Base
             {
                 if (Tablename == "DATA" && props[i].Name == "Id") continue;
                 if (props[i].GetValue(model) is null) continue;
-                Console.WriteLine(props[i].GetValue(model));
 
                 sb.Append($"@{props[i].Name.ToString()}");
                 cmd.Parameters.AddWithValue(props[i].Name.ToString(), props[i].GetValue(model));
@@ -47,8 +45,6 @@ namespace ProgFlowManager.DAL.Services.Base
 
             }
             sb.Append(')');
-
-            Console.WriteLine(sb.ToString());
 
             cmd.CommandText = sb.ToString();
 

@@ -11,7 +11,13 @@ namespace ProgFlowManager.BLL.Models.Programs
     {
         public DateTime ETA { get; set; }
         public DateTime Started { get; set; }
-        public IEnumerable<CategoryDTO> Categories { get; set; }
-        public IEnumerable<LanguageDTO> Languages { get; set; }
+        public List<CategoryDTO> Categories { get; set; }
+        public List<LanguageDTO> Languages { get; set; }
+
+        public SoftwareDTO()
+        {
+            Categories = new List<CategoryDTO>();
+            Languages = new List<LanguageDTO>();
+        }
     }
 }
