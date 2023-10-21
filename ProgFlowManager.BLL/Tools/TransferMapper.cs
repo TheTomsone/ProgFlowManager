@@ -98,7 +98,11 @@ namespace ProgFlowManager.BLL.Tools
 
                 foreach (PropertyInfo prop in props)
                 {
+                    if (!prop.CanRead) continue;
+
                     object value = prop.GetValue(otherItem);
+
+                    if (!prop.CanWrite) continue;
                     if (value is not null) prop.SetValue(item, value);
                 }
 
