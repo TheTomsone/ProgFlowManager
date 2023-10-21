@@ -107,14 +107,14 @@ INSERT INTO [dbo].[VN_VERSION_NB] ([vn_id],[vn_major],[vn_minor],[vn_patch],[vn_
 (5, 0,0,2, NULL,NULL, 210, 1),
 (9, 0,0,1, NULL,NULL, 210, 8);
 
-INSERT INTO [dbo].[C_CONTENT] ([c_id], [c_stage_id]) VALUES
-(3, 200),
-(4, 200),
-(6, 200),
-(7, 200),
-(10, 200),
-(11, 200),
-(12, 200);
+INSERT INTO [dbo].[C_CONTENT] ([c_id],[c_version_nb_id],[c_stage_id]) VALUES
+(3,2,200),
+(4,2,200),
+(6,5,200),
+(7,5,200),
+(10,9,200),
+(11,9,200),
+(12,9,200);
 
 INSERT INTO [dbo].[SC_SOFTWARE_CATEGORY] ([sc_software_id],[sc_category_id]) VALUES
 (1,25000),

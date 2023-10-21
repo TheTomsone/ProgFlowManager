@@ -10,6 +10,7 @@ namespace ProgFlowManager.DAL.Models.Programs
     public class Content : IModelDAL
     {
         public int Id { get; set; }
+        public int VersionNbId { get; set; }
         public int StageId { get; set; }
     }
 }

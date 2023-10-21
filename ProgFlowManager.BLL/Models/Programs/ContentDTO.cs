@@ -9,6 +9,7 @@ namespace ProgFlowManager.BLL.Models.Programs
 {
     public class ContentDTO : DataDTO, IModelDTO
     {
+        public VersionNbDTO VersionNb { get; set; }
         public StageDTO Stage { get; set; }
     }
 }

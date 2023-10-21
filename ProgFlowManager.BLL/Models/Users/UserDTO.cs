@@ -9,8 +9,8 @@ namespace ProgFlowManager.BLL.Models.Users
 {
     public class UserDTO : DataDTO, IModelDTO
     {
-        public string Firstname { get; set; }
-        public string Lastname { get; set; }
+        public string Firstname { private get; set; }
+        public string Lastname { private get; set; }
         public string Email { get; set; }
         public IEnumerable<TeamDTO> Teams { get; set; }
         public string Fullname => Firstname + ' ' + Lastname;
