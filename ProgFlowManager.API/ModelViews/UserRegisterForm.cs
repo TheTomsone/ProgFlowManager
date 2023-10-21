@@ -22,12 +22,13 @@ namespace ProgFlowManager.API.ModelViews
         [EmailAddress]
         public required string Email { get; set; }
         [Required]
+        [DisplayName("Password")]
         [DataType(DataType.Password)]
         [RegularExpression("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+{}:;<>,.?~=-]).{8,}$", ErrorMessage = "Password must contain the following criteria:")]
-        public required string Password { get; set; }
+        public required string PasswordHash { get; set; }
         [Required]
         [DataType(DataType.Password)]
-        [Compare(nameof(Password), ErrorMessage = "Passwords must match")]
+        [Compare(nameof(PasswordHash), ErrorMessage = "Passwords must match")]
         public required string ConfirmPassword { get; set; }
 
 
@@ -35,13 +36,13 @@ namespace ProgFlowManager.API.ModelViews
         {
             List<string> errors = new();
 
-            if (!Regex.IsMatch(Password, "^(?=.*[A-Z])"))
+            if (!Regex.IsMatch(PasswordHash, "^(?=.*[A-Z])"))
                 errors.Add("Password must contain at least one uppercase letter.");
-            if (!Regex.IsMatch(Password, "^(?=.*[a-z])"))
+            if (!Regex.IsMatch(PasswordHash, "^(?=.*[a-z])"))
                 errors.Add("Password must contain at least one lowercase letter.");
-            if (!Regex.IsMatch(Password, "^(?=.*[0-9])"))
+            if (!Regex.IsMatch(PasswordHash, "^(?=.*[0-9])"))
                 errors.Add("Password must contain at least one digit.");
-            if (!Regex.IsMatch(Password, "^(?=.*[!@#$%^&*()_+{}:;<>,.?~=-])"))
+            if (!Regex.IsMatch(PasswordHash, "^(?=.*[!@#$%^&*()_+{}:;<>,.?~=-])"))
                 errors.Add("Password must contain at least one special character.");
 
             return errors;

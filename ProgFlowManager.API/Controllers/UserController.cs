@@ -35,7 +35,11 @@ namespace ProgFlowManager.API.Controllers
 
             try
             {
-                registerForm.Password = BCrypt.Net.BCrypt.HashPassword(registerForm.Password);
+                Console.WriteLine("Register form Password (Before BCrypt) : " + registerForm.PasswordHash);
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerForm.PasswordHash);
+                registerForm.PasswordHash = hashedPassword;
+                Console.WriteLine("Register form Password (After BCrypt) : " + registerForm.PasswordHash);
+                Console.WriteLine("To Model :" + registerForm.ToModel<User, UserRegisterForm>().PasswordHash);
                 if (_dataService.Create(registerForm.ToModel<Data, UserRegisterForm>()) &&
                         _userService.Register(registerForm.ToModel<User, UserRegisterForm>(_dataService.GetLastId())))
                     return Ok();

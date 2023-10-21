@@ -10,9 +10,17 @@ namespace ProgFlowManager.DAL.Models.Programs
     public class Software : IModelDAL
     {
         public int Id { get; set; }
-        public DateTime ETA { get; set; }
+        public DateTime? ETA { get; set; }
         public DateTime Started { get; set; }
-        public int UserId { get; set; }
-        public int TeamId { get; set; }
+        public int? UserId { get; set; }
+        public int? TeamId { get; set; }
+
+        public Software()
+        {
+            ETA = null;
+            Started = DateTime.Now;
+            UserId = null;
+            TeamId = null;
+        }
     }
 }
