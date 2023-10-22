@@ -9,27 +9,27 @@ namespace ProgFlowManager.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LanguageController : ControllerBase
+    public class StageController : ControllerBase
     {
-        private readonly ILanguageService _languageService;
+        private readonly IStageService _stageService;
 
-        public LanguageController(ILanguageService languageService)
+        public StageController(IStageService stageService)
         {
-            _languageService = languageService;
+            _stageService = stageService;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            try { return Ok(_languageService.GetAll().ToDTO<LanguageDTO, Language>()); }
+            try { return Ok(_stageService.GetAll().ToDTO<StageDTO, Stage>()); }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public IActionResult Get(int id)
         {
-            if (_languageService.GetById(id) is null) return NotFound();
+            if (_stageService.GetById(id) is null) return NotFound();
 
-            try { return Ok(_languageService.GetById(id).ToDTO<LanguageDTO, Language>()); }
+            try { return Ok(_stageService.GetById(id).ToDTO<StageDTO, Stage>()); }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
     }

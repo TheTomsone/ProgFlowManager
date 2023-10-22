@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ProgFlowManager.DAL.Services.Base
 {
-    public class BaseService<TModel> : IBaseService<TModel> where TModel : class
+    public abstract class BaseService<TModel> : IBaseService<TModel> where TModel : class
     {
         private readonly SqlConnection _connection;
 

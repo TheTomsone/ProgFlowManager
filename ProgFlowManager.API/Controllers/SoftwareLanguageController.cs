@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ProgFlowManager.API.ModelViews;
+using ProgFlowManager.API.ModelViews.Programs;
 using ProgFlowManager.BLL.Tools;
+using ProgFlowManager.DAL;
 using ProgFlowManager.DAL.Interfaces.Programs;
 using ProgFlowManager.DAL.Models.Programs;
 
@@ -24,7 +25,7 @@ namespace ProgFlowManager.API.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try { foreach (SoftwareLanguageForm form in forms)
-                    if (_softwareLanguageService.Create(form.ToModel<SoftwareLanguage, SoftwareLanguageForm>()))
+                    if (_softwareLanguageService.Create(form.ConvertTo<SoftwareLanguage, SoftwareLanguageForm>()))
                         return Ok(); }
             catch (Exception ex) { return BadRequest(ex.Message); }
 
@@ -57,7 +58,7 @@ namespace ProgFlowManager.API.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try { foreach (SoftwareLanguageForm form in forms)
-                    if (_softwareLanguageService.DeleteRelation(form.ToModel<SoftwareLanguage, SoftwareLanguageForm>()))
+                    if (_softwareLanguageService.DeleteRelation(form.ConvertTo<SoftwareLanguage, SoftwareLanguageForm>()))
                         return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }

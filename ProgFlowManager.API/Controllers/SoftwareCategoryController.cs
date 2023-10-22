@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ProgFlowManager.API.ModelViews;
+using ProgFlowManager.API.ModelViews.Programs;
 using ProgFlowManager.BLL.Tools;
+using ProgFlowManager.DAL;
 using ProgFlowManager.DAL.Interfaces.Programs;
 using ProgFlowManager.DAL.Models.Programs;
 
@@ -22,7 +23,7 @@ namespace ProgFlowManager.API.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            try { if (_softwareCategoryService.Create(form.ToModel<SoftwareCategory, SoftwareCategoryForm>()))
+            try { if (_softwareCategoryService.Create(form.ConvertTo<SoftwareCategory, SoftwareCategoryForm>()))
                     return Ok(); }
             catch (Exception ex) { return BadRequest(ex.Message); }
 
@@ -54,7 +55,7 @@ namespace ProgFlowManager.API.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            try { if (_softwareCategoryService.DeleteRelation(form.ToModel<SoftwareCategory, SoftwareCategoryForm>()))
+            try { if (_softwareCategoryService.DeleteRelation(form.ConvertTo<SoftwareCategory, SoftwareCategoryForm>()))
                     return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }

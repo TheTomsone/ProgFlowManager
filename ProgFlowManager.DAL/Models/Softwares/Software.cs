@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProgFlowManager.DAL.Models.Programs
 {
-    public class Software : IModelDAL
+    public class Software : IModel
     {
         public int Id { get; set; }
         public DateTime? ETA { get; set; }

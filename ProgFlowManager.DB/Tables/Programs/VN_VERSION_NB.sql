@@ -7,7 +7,7 @@
 	[vn_goal]		DATETIME2	NULL,
 	[vn_release]	DATETIME2	NULL,
 	[vn_stage_id]	INT			NOT NULL,
-	[vn_software_id] INT			NOT NULL,
+	[vn_software_id] INT		NOT NULL,
 	UNIQUE ([vn_major],[vn_minor],[vn_patch],[vn_software_id]),
 	FOREIGN KEY ([vn_id])			REFERENCES [dbo].[D_DATA]([d_id]),
 	FOREIGN KEY ([vn_stage_id])		REFERENCES [dbo].[S_STAGE](s_id),

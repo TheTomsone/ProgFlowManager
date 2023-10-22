@@ -8,7 +8,8 @@ using ProgFlowManager.DAL.Interfaces.Programs;
 using ProgFlowManager.DAL.Models.Programs;
 using ProgFlowManager.DAL.Services.Programs;
 using System.Reflection;
-using ProgFlowManager.API.ModelViews;
+using ProgFlowManager.API.ModelViews.Programs;
+using ProgFlowManager.DAL;
 
 namespace ProgFlowManager.API.Controllers
 {
@@ -22,9 +23,12 @@ namespace ProgFlowManager.API.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ISoftwareLanguageService _softwareLanguageService;
         private readonly ILanguageService _languageService;
-        private readonly IEnumerable<SoftwareDTO> _softwares;
+        private readonly IVersionService _versionService;
 
-        public SoftwareController(ISoftwareService programService, ISoftwareCategoryService programCategoryService, ICategoryService categoryService, IDataService dataService, ISoftwareLanguageService softwareLanguageService, ILanguageService languageService)
+        private readonly IEnumerable<SoftwareDTO> _softwares;
+        private readonly IEnumerable<SoftwareDTO> _softwaresFull;
+
+        public SoftwareController(ISoftwareService programService, ISoftwareCategoryService programCategoryService, ICategoryService categoryService, IDataService dataService, ISoftwareLanguageService softwareLanguageService, ILanguageService languageService, IVersionService versionService)
         {
             _softwareService = programService;
             _softwareCategoryService = programCategoryService;
@@ -32,19 +36,22 @@ namespace ProgFlowManager.API.Controllers
             _dataService = dataService;
             _softwareLanguageService = softwareLanguageService;
             _languageService = languageService;
+            _versionService = versionService;
 
             _softwares = _softwareService.GetAll().ToDTO<SoftwareDTO, Software>()
-                                        .MergeWith(_dataService.GetAll().ToDTO<SoftwareDTO, Data>())
-                                        .MergeData<SoftwareDTO, CategoryDTO, SoftwareCategory, Category>(
-                                                    software => software.Categories,
-                                                    _softwareCategoryService.GetAllById<Software>,
-                                                    relation => relation.CategoryId,
-                                                    _categoryService.GetById)
-                                        .MergeData<SoftwareDTO, LanguageDTO, SoftwareLanguage, Language>(
-                                                    software => software.Languages,
-                                                    _softwareLanguageService.GetAllById<Software>,
-                                                    relation => relation.LanguageId,
-                                                    _languageService.GetById);
+                                         .MergeManyToMany<SoftwareDTO, CategoryDTO, SoftwareCategory, Category>(
+                                                        software => software.Categories,
+                                                        _softwareCategoryService.GetAllById<Software>,
+                                                        relation => relation.CategoryId,
+                                                        _categoryService.GetById)
+                                         .MergeManyToMany<SoftwareDTO, LanguageDTO, SoftwareLanguage, Language>(
+                                                        software => software.Languages,
+                                                        _softwareLanguageService.GetAllById<Software>,
+                                                        relation => relation.LanguageId,
+                                                        _languageService.GetById);
+
+            //_softwaresFull = _softwares.ConvertTo<SoftwareFullDTO, SoftwareDTO>()
+            //                           .MergeManyToOne(software => software.Versions, id => _versionService.GetAllById<Software>(id).ToList());
         }
 
         [HttpPost]
@@ -54,9 +61,9 @@ namespace ProgFlowManager.API.Controllers
 
             try
             {
-                if (_dataService.Create(form.ToModel<Data, SoftwareForm>()) &&
-                        _softwareService.Create(form.ToModel<Software, SoftwareForm>(_dataService.GetLastId())))
-                    return Ok();
+                if (_dataService.Create(form.ConvertTo<Data, SoftwareForm>()) &&
+                        _softwareService.Create(form.ConvertTo<Software, SoftwareForm>(_dataService.GetLastId())))
+                            return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
 
@@ -66,14 +73,31 @@ namespace ProgFlowManager.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_softwares);
+            try { return Ok(_softwares); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             if (_softwares.First(s => s.Id == id) is null) return NotFound();
 
-            return Ok(_softwares.First(s => s.Id == id));
+            try { return Ok(_softwares.First(s => s.Id == id)); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+        }
+
+        [HttpGet("details")]
+        public IActionResult GetAllDetails()
+        {
+            try { return Ok(_softwaresFull); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+        }
+        [HttpGet("details/{id}")]
+        public IActionResult GetDetailsById(int id)
+        {
+            if (_softwaresFull.First(s => s.Id == id) is null) return NotFound();
+
+            try { return Ok(_softwaresFull.First(s => s.Id == id)); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
         [HttpPatch]
@@ -83,8 +107,8 @@ namespace ProgFlowManager.API.Controllers
 
             try
             {
-                if (_dataService.Update(form.ToModel<Data, SoftwareForm>(id)) &&
-                        _softwareService.Update(form.ToModel<Software, SoftwareForm>(id)))
+                if (_dataService.Update(form.ConvertTo<Data, SoftwareForm>(id)) &&
+                        _softwareService.Update(form.ConvertTo<Software, SoftwareForm>(id)))
                     return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }

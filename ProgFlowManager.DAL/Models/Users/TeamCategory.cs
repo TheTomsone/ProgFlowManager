@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProgFlowManager.DAL.Models.Users
 {
-    public class TeamCategory : BaseCategory, IModelDAL
+    public class TeamCategory : BaseCategory, IModel
     {
     }
 }

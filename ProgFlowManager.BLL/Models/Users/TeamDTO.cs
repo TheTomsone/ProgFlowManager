@@ -1,4 +1,5 @@
-﻿using ProgFlowManager.BLL.Interfaces;
+﻿using ProgFlowManager.DAL.Interfaces;
+using ProgFlowManager.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ProgFlowManager.BLL.Models.Users
 {
-    public class TeamDTO : DataDTO, IModelDTO
+    public class TeamDTO : Data, IModel
     {
         public TeamCategoryDTO TeamCategories { get; set; }
         public IEnumerable<UserDTO> Users { get; set; }

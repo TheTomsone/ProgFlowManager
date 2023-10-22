@@ -21,14 +21,16 @@ namespace ProgFlowManager.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_categoryService.GetAll().ToDTO<CategoryDTO, Category>());
+            try { return Ok(_categoryService.GetAll().ToDTO<CategoryDTO, Category>()); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             if (_categoryService.GetById(id) is null) return NotFound();
 
-            return Ok(_categoryService.GetById(id).ToDTO<CategoryDTO, Category>());
+            try { return Ok(_categoryService.GetById(id).ToDTO<CategoryDTO, Category>()); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
         }
     }
 }

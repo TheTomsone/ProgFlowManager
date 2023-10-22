@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ProgFlowManager.API.ModelViews;
+using ProgFlowManager.API.ModelViews.Users;
 using ProgFlowManager.API.Tools;
 using ProgFlowManager.BLL.Models.Programs;
 using ProgFlowManager.BLL.Models.Users;
 using ProgFlowManager.BLL.Tools;
+using ProgFlowManager.DAL;
 using ProgFlowManager.DAL.Interfaces;
 using ProgFlowManager.DAL.Interfaces.Users;
 using ProgFlowManager.DAL.Models;
@@ -39,9 +40,9 @@ namespace ProgFlowManager.API.Controllers
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerForm.PasswordHash);
                 registerForm.PasswordHash = hashedPassword;
                 Console.WriteLine("Register form Password (After BCrypt) : " + registerForm.PasswordHash);
-                Console.WriteLine("To Model :" + registerForm.ToModel<User, UserRegisterForm>().PasswordHash);
-                if (_dataService.Create(registerForm.ToModel<Data, UserRegisterForm>()) &&
-                        _userService.Register(registerForm.ToModel<User, UserRegisterForm>(_dataService.GetLastId())))
+                Console.WriteLine("To Model :" + registerForm.ConvertTo<User, UserRegisterForm>().PasswordHash);
+                if (_dataService.Create(registerForm.ConvertTo<Data, UserRegisterForm>()) &&
+                        _userService.Register(registerForm.ConvertTo<User, UserRegisterForm>(_dataService.GetLastId())))
                     return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
@@ -86,7 +87,7 @@ namespace ProgFlowManager.API.Controllers
         private IEnumerable<UserDTO> GetUserDTOs()
         {
             IEnumerable<UserDTO> userDTOs = _userService.Models.ToDTO<UserDTO, User>()
-                                                               .MergeWith(_dataService.Models.ToDTO<UserDTO, Data>());
+                                                               .MergeWith(_dataService.Models.ToDTO<UserDTO, Data>(), user => user.Id);
 
             return userDTOs;
         }

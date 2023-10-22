@@ -1,4 +1,4 @@
-﻿using ProgFlowManager.BLL.Interfaces;
+﻿using ProgFlowManager.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProgFlowManager.BLL.Models
 {
-    public abstract class BaseCategoryDTO : IModelDTO
+    public abstract class BaseCategoryDTO : IModel
     {
         public int Id { get; set; }
         public string Label { get; set; }

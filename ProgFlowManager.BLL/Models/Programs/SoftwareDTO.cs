@@ -1,4 +1,5 @@
-﻿using ProgFlowManager.BLL.Interfaces;
+﻿using ProgFlowManager.DAL.Interfaces;
+using ProgFlowManager.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ProgFlowManager.BLL.Models.Programs
 {
-    public class SoftwareDTO : DataDTO, IModelDTO
+    public class SoftwareDTO : Data, IModel
     {
         public DateTime ETA { get; set; }
         public DateTime Started { get; set; }

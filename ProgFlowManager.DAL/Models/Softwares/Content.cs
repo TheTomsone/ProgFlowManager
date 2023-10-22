@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProgFlowManager.DAL.Models.Programs
 {
-    public class Content : IModelDAL
+    public class Content : IModel
     {
         public int Id { get; set; }
         public int VersionNbId { get; set; }

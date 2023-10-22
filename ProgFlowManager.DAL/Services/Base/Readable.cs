@@ -19,7 +19,7 @@ namespace ProgFlowManager.DAL.Services.Base
         {
         }
 
-        public IEnumerable<TModel> GetAll()
+        public virtual IEnumerable<TModel> GetAll()
         {
             using SqlCommand cmd = Connection.CreateCommand();
             List<TModel> list = new();

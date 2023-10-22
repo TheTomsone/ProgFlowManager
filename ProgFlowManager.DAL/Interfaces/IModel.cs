@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProgFlowManager.BLL.Interfaces
+namespace ProgFlowManager.DAL.Interfaces
 {
-    public interface IModelDTO
+    public interface IModel
     {
-        public int Id { get; }
+        int Id { get; set; }
     }
 }

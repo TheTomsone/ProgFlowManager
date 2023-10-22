@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ProgFlowManager.DAL.Models
 {
-    public class Data : IModelDAL
+    public class Data : IModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -17,11 +17,5 @@ namespace ProgFlowManager.DAL.Models
         public DateTime? Updated { get; set;}
         public byte[]? ImageData { get; set; }
         public string? ImageMime { get; set; }
-
-        public Data()
-        {
-            Name = "No name";
-            Created = DateTime.Now;
-        }
     }
 }

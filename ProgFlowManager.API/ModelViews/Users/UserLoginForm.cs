@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
-namespace ProgFlowManager.API.ModelViews
+namespace ProgFlowManager.API.ModelViews.Users
 {
     public class UserLoginForm
     {

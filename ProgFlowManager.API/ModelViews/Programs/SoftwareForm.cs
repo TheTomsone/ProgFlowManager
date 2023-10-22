@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ProgFlowManager.API.ModelViews
+namespace ProgFlowManager.API.ModelViews.Programs
 {
     public class SoftwareForm
     {

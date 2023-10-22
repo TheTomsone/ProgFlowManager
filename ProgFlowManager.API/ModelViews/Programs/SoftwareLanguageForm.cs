@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ProgFlowManager.API.ModelViews
+namespace ProgFlowManager.API.ModelViews.Programs
 {
-    public class SoftwareCategoryForm
+    public class SoftwareLanguageForm
     {
         [Required]
         public int SoftwareId { get; set; }
         [Required]
-        public int CategoryId { get; set; }
+        public int LanguageId { get; set; }
     }
 }

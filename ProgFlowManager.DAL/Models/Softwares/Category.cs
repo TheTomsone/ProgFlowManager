@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProgFlowManager.DAL.Models.Programs
 {
-    public class Category : BaseCategory, IModelDAL
+    public class Category : BaseCategory, IModel
     {
     }
 }

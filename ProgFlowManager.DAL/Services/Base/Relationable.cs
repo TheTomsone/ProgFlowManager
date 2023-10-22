@@ -41,7 +41,7 @@ namespace ProgFlowManager.DAL.Services.Base
         {
             using SqlCommand cmd = Connection.CreateCommand();
             List<TModel> list = new();
-            string sql = $"SELECT * FROM [dbo].[{FullTablename}] WHERE [{Prefix.ToLower()}_{typeof(TRelation).Name.ToLower()}_id] = @id";
+            string sql = $"SELECT * FROM [dbo].[{FullTablename}] WHERE [{Prefix.ToLower()}_{typeof(TRelation).Name.UnderscoreBetweenLowerUpper().ToLower()}_id] = @id";
 
             cmd.Parameters.AddWithValue("id", id);
             cmd.CommandText = sql;

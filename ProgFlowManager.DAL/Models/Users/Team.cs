@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProgFlowManager.DAL.Models.Users
 {
-    public class Team : IModelDAL
+    public class Team : IModel
     {
         public int Id { get; set; }
         public int TeamCategoryId { get; set; }
