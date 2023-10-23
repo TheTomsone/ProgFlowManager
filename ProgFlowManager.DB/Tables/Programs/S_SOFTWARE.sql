@@ -3,6 +3,7 @@
 	[s_id]		INT			NOT NULL PRIMARY KEY,
 	[s_eta]		DATETIME2	NULL,
 	[s_started] DATETIME2	NOT NULL DEFAULT GETDATE(),
+	[s_stage_id] INT		NOT NULL DEFAULT 210,
 	[s_user_id] INT			NULL,
 	[s_team_id] INT			NULL,
 	UNIQUE ([s_id],[s_user_id]),

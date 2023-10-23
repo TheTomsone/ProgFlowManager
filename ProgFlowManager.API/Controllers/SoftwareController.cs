@@ -24,11 +24,20 @@ namespace ProgFlowManager.API.Controllers
         private readonly ISoftwareLanguageService _softwareLanguageService;
         private readonly ILanguageService _languageService;
         private readonly IVersionService _versionService;
+        private readonly IStageService _stageService;
+        private readonly IContentService _contentService;
 
         private readonly IEnumerable<SoftwareDTO> _softwares;
         private readonly IEnumerable<SoftwareDTO> _softwaresFull;
 
-        public SoftwareController(ISoftwareService programService, ISoftwareCategoryService programCategoryService, ICategoryService categoryService, IDataService dataService, ISoftwareLanguageService softwareLanguageService, ILanguageService languageService, IVersionService versionService)
+        public SoftwareController(ISoftwareService programService,
+                                  ISoftwareCategoryService programCategoryService,
+                                  ICategoryService categoryService, IDataService dataService,
+                                  ISoftwareLanguageService softwareLanguageService,
+                                  ILanguageService languageService,
+                                  IVersionService versionService,
+                                  IStageService stageService,
+                                  IContentService contentService)
         {
             _softwareService = programService;
             _softwareCategoryService = programCategoryService;
@@ -37,8 +46,12 @@ namespace ProgFlowManager.API.Controllers
             _softwareLanguageService = softwareLanguageService;
             _languageService = languageService;
             _versionService = versionService;
+            _stageService = stageService;
+            _contentService = contentService;
 
             _softwares = _softwareService.GetAll().ConvertTo<SoftwareDTO, Software>()
+                                         .MergeWith(_dataService.GetAll(), software => software.Id, data => data.Id)
+                                         .MergeOne<SoftwareDTO, StageDTO, Stage, Software>(_softwareService.GetById, software => software.StageId, _stageService.GetById)
                                          .MergeManyToMany<SoftwareDTO, CategoryDTO, SoftwareCategory, Category>(
                                                         software => software.Categories,
                                                         _softwareCategoryService.GetAllById<Software>,
@@ -49,6 +62,19 @@ namespace ProgFlowManager.API.Controllers
                                                         _softwareLanguageService.GetAllById<Software>,
                                                         relation => relation.LanguageId,
                                                         _languageService.GetById);
+
+            _softwaresFull = _softwares.ConvertTo<SoftwareFullDTO, SoftwareDTO>()
+                                       .MergeManyToOne(software => software.Versions, id => _versionService.GetAllById<Software>(id)
+                                                                                                           .ConvertTo<VersionNbDTO, VersionNb>()
+                                                                                                           .MergeWith(_dataService.GetAll(), version => version.Id, data => data.Id)
+                                                                                                           .MergeOne<VersionNbDTO, StageDTO, Stage, VersionNb>(_versionService.GetById, version => version.StageId, _stageService.GetById)
+                                                                                                           .ConvertTo<VersionNbFullDTO, VersionNbDTO>()
+                                                                                                           .MergeManyToOne(version => version.Contents, id => _contentService.GetAllById<VersionNb>(id)
+                                                                                                                                                                             .ConvertTo<ContentDTO, Content>()
+                                                                                                                                                                             .MergeWith(_dataService.GetAll(), content => content.Id, data => data.Id)
+                                                                                                                                                                             .MergeOne<ContentDTO, StageDTO, Stage, Content>(_contentService.GetById, content => content.StageId, _stageService.GetById)
+                                                                                                                                                                             .ToList())
+                                                                                                           .ToList());
 
             //_softwaresFull = _softwares.ConvertTo<SoftwareFullDTO, SoftwareDTO>()
             //                           .MergeManyToOne(software => software.Versions, id => _versionService.GetAllById<Software>(id).ToList());

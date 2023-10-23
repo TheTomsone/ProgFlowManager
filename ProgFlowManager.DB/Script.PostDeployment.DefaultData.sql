@@ -85,37 +85,37 @@ INSERT INTO [dbo].[S_STAGE] ([s_id], [s_label]) VALUES
     (430,'Post-release fixes');
 
 
-INSERT INTO [dbo].[D_DATA] ([d_name], [d_resume], [d_created]) VALUES
-('ProgFlowManager', 'PFM is a tool for creating roadmap, manage project and team, generate code with ERD/UML diagram,...', GETDATE()),
-    ('Database','Implementation of the database for the program API', GETDATE()),
-        ('Programs Tables', 'For every programs data, like name, description, date, version, content,...', GETDATE()),
-        ('Users Tables', 'For every users data, like name, email, team, role,...', GETDATE()),
-    ('Data Access Layer','Implementation of the DAL and services for accessing the database', GETDATE()),
-        ('Model','Adding model with same propreties from their tables', GETDATE()),
-        ('Services','Implementation of generic base services for accessing data', GETDATE()),
-('LazyDataAccess', 'LDA is a framework for easily access any database with reflection', GETDATE()),
-    ('Generic Access Layer', 'Implemenation of the generic base class for accessing database', GETDATE()),
-        ('Base class','Implementation of base class to access data tables', GETDATE()),
-        ('Generic Services', 'Adding generic services for basic CRUD database action', GETDATE()),
-        ('Query Provider', 'Implementation of the query provider for accessing database more easily', GETDATE());
+INSERT INTO [dbo].[D_DATA] ([d_name], [d_resume]) VALUES
+('ProgFlowManager', 'PFM is a tool for creating roadmap, manage project and team, generate code with ERD/UML diagram,...'),
+    ('Database','Implementation of the database for the program API'),
+        ('Programs Tables', 'For every programs data, like name, description, date, version, content,...'),
+        ('Users Tables', 'For every users data, like name, email, team, role,...'),
+    ('Data Access Layer','Implementation of the DAL and services for accessing the database'),
+        ('Model','Adding model with same propreties from their tables'),
+        ('Services','Implementation of generic base services for accessing data'),
+('LazyDataAccess', 'LDA is a framework for easily access any database with reflection'),
+    ('Generic Access Layer', 'Implemenation of the generic base class for accessing database'),
+        ('Base class','Implementation of base class to access data tables'),
+        ('Generic Services', 'Adding generic services for basic CRUD database action'),
+        ('Query Provider', 'Implementation of the query provider for accessing database more easily');
 
-INSERT INTO [dbo].[S_SOFTWARE] ([s_id], [s_eta]) VALUES
-(1, NULL),
-(8, NULL);
+INSERT INTO [dbo].[S_SOFTWARE] ([s_id]) VALUES
+(1),
+(8);
 
-INSERT INTO [dbo].[VN_VERSION_NB] ([vn_id],[vn_major],[vn_minor],[vn_patch],[vn_goal],[vn_release],[vn_stage_id],[vn_software_id]) VALUES
-(2, 0,0,1, NULL,NULL, 210, 1),
-(5, 0,0,2, NULL,NULL, 210, 1),
-(9, 0,0,1, NULL,NULL, 210, 8);
+INSERT INTO [dbo].[VN_VERSION_NB] ([vn_id],[vn_major],[vn_minor],[vn_patch],[vn_software_id]) VALUES
+(2, 0,0,1, 1),
+(5, 0,0,2, 1),
+(9, 0,0,1, 8);
 
-INSERT INTO [dbo].[C_CONTENT] ([c_id],[c_version_nb_id],[c_stage_id]) VALUES
-(3,2,200),
-(4,2,200),
-(6,5,200),
-(7,5,200),
-(10,9,200),
-(11,9,200),
-(12,9,200);
+INSERT INTO [dbo].[C_CONTENT] ([c_id],[c_version_nb_id]) VALUES
+(3,2),
+(4,2),
+(6,5),
+(7,5),
+(10,9),
+(11,9),
+(12,9);
 
 INSERT INTO [dbo].[SC_SOFTWARE_CATEGORY] ([sc_software_id],[sc_category_id]) VALUES
 (1,25000),

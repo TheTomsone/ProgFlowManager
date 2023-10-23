@@ -11,8 +11,14 @@ namespace ProgFlowManager.DAL.Models.Programs
     {
         public int Id { get; set; }
         public DateTime? ETA { get; set; }
-        public DateTime Started { get; set; }
-        public int? UserId { get; set; }
-        public int? TeamId { get; set; }
+        public DateTime? Started { get; set; }
+        public int StageId { get; set; }
+        public int UserId { get; set; }
+
+        public Software()
+        {
+            ETA = null;
+            Started = null;
+        }
     }
 }
