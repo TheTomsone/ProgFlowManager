@@ -21,7 +21,7 @@ namespace ProgFlowManager.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            try { return Ok(_stageService.GetAll().ToDTO<StageDTO, Stage>()); }
+            try { return Ok(_stageService.GetAll().ConvertTo<StageDTO, Stage>()); }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
         [HttpGet("{id}")]
@@ -29,7 +29,7 @@ namespace ProgFlowManager.API.Controllers
         {
             if (_stageService.GetById(id) is null) return NotFound();
 
-            try { return Ok(_stageService.GetById(id).ToDTO<StageDTO, Stage>()); }
+            try { return Ok(_stageService.GetById(id).ConvertTo<StageDTO, Stage>()); }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
     }

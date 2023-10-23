@@ -14,13 +14,5 @@ namespace ProgFlowManager.DAL.Models.Programs
         public DateTime Started { get; set; }
         public int? UserId { get; set; }
         public int? TeamId { get; set; }
-
-        public Software()
-        {
-            ETA = null;
-            Started = DateTime.Now;
-            UserId = null;
-            TeamId = null;
-        }
     }
 }

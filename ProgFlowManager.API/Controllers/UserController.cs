@@ -86,8 +86,8 @@ namespace ProgFlowManager.API.Controllers
         }
         private IEnumerable<UserDTO> GetUserDTOs()
         {
-            IEnumerable<UserDTO> userDTOs = _userService.Models.ToDTO<UserDTO, User>()
-                                                               .MergeWith(_dataService.Models.ToDTO<UserDTO, Data>(), user => user.Id);
+            IEnumerable<UserDTO> userDTOs = _userService.Models.ConvertTo<UserDTO, User>()
+                                                               .MergeWith(_dataService.Models.ConvertTo<UserDTO, Data>(), user => user.Id);
 
             return userDTOs;
         }

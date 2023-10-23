@@ -57,6 +57,7 @@ INSERT INTO [dbo].[L_LANGUAGE] ([l_id], [l_label]) VALUES
 (20,'C'),
 (30,'Assemble'),
 (40,'C#'),
+    (41, 'Dapper'),
 (50,'.NET Core'),
     (51,'Console'),
     (52,'ASP.NET Core'),
@@ -84,23 +85,23 @@ INSERT INTO [dbo].[S_STAGE] ([s_id], [s_label]) VALUES
     (430,'Post-release fixes');
 
 
-INSERT INTO [dbo].[D_DATA] ([d_name], [d_resume], [d_created], [d_updated]) VALUES
-('ProgFlowManager', 'PFM is a tool for creating roadmap, manage project and team, generate code with ERD/UML diagram,...', GETDATE(), GETDATE()),
-    ('Database','Implementation of the database for the program API', GETDATE(), GETDATE()),
-        ('Programs Tables', 'For every programs data, like name, description, date, version, content,...', GETDATE(), GETDATE()),
-        ('Users Tables', 'For every users data, like name, email, team, role,...', GETDATE(), GETDATE()),
-    ('Data Access Layer','Implementation of the DAL and services for accessing the database', GETDATE(), GETDATE()),
-        ('Model','Adding model with same propreties from their tables',GETDATE(),GETDATE()),
-        ('Services','Implementation of generic base services for accessing data',GETDATE(),GETDATE()),
-('LazyDataAccess', 'LDA is a framework for easily access any database with reflection', GETDATE(), GETDATE()),
-    ('Generic Access Layer', 'Implemenation of the generic base class for accessing database', GETDATE(), GETDATE()),
-        ('Base class','Implementation of base class to access data tables',GETDATE(),GETDATE()),
-        ('Generic Services', 'Adding generic services for basic CRUD database action', GETDATE(), GETDATE()),
-        ('Query Provider', 'Implementation of the query provider for accessing database more easily', GETDATE(), GETDATE());
+INSERT INTO [dbo].[D_DATA] ([d_name], [d_resume], [d_created]) VALUES
+('ProgFlowManager', 'PFM is a tool for creating roadmap, manage project and team, generate code with ERD/UML diagram,...', GETDATE()),
+    ('Database','Implementation of the database for the program API', GETDATE()),
+        ('Programs Tables', 'For every programs data, like name, description, date, version, content,...', GETDATE()),
+        ('Users Tables', 'For every users data, like name, email, team, role,...', GETDATE()),
+    ('Data Access Layer','Implementation of the DAL and services for accessing the database', GETDATE()),
+        ('Model','Adding model with same propreties from their tables', GETDATE()),
+        ('Services','Implementation of generic base services for accessing data', GETDATE()),
+('LazyDataAccess', 'LDA is a framework for easily access any database with reflection', GETDATE()),
+    ('Generic Access Layer', 'Implemenation of the generic base class for accessing database', GETDATE()),
+        ('Base class','Implementation of base class to access data tables', GETDATE()),
+        ('Generic Services', 'Adding generic services for basic CRUD database action', GETDATE()),
+        ('Query Provider', 'Implementation of the query provider for accessing database more easily', GETDATE());
 
-INSERT INTO [dbo].[S_SOFTWARE] ([s_id], [s_eta], [s_started]) VALUES
-(1, NULL, GETDATE()),
-(8, NULL, GETDATE());
+INSERT INTO [dbo].[S_SOFTWARE] ([s_id], [s_eta]) VALUES
+(1, NULL),
+(8, NULL);
 
 INSERT INTO [dbo].[VN_VERSION_NB] ([vn_id],[vn_major],[vn_minor],[vn_patch],[vn_goal],[vn_release],[vn_stage_id],[vn_software_id]) VALUES
 (2, 0,0,1, NULL,NULL, 210, 1),

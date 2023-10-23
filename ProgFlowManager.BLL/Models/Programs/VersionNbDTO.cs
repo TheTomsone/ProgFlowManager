@@ -17,10 +17,5 @@ namespace ProgFlowManager.BLL.Models.Programs
         public DateTime Release { get; set; }
         public StageDTO Stage { get; set; }
         public int SoftwareId { get; set; }
-
-        public VersionNbDTO()
-        {
-            Stage = new StageDTO();
-        }
     }
 }

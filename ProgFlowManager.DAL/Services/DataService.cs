@@ -16,11 +16,11 @@ namespace ProgFlowManager.DAL.Services
         {
         }
 
-        public override bool Create(Data model)
-        {
-            model.Created = DateTime.Now;
-            model.Updated = DateTime.Now;
-            return base.Create(model);
-        }
+        //public override bool Create(Data model)
+        //{
+        //    model.Created = DateTime.Now;
+        //    model.Updated = DateTime.Now;
+        //    return base.Create(model);
+        //}
     }
 }

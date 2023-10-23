@@ -18,16 +18,14 @@ namespace ProgFlowManager.API.Controllers
         private readonly IDataService _dataService;
         private readonly IContentService _contentService;
         private readonly IStageService _stageService;
-        private readonly IVersionService _versionService;
 
         private readonly IEnumerable<ContentDTO> _contents;
 
-        public ContentController(IDataService dataService, IContentService contentService, IStageService stageService, IVersionService versionService)
+        public ContentController(IDataService dataService, IContentService contentService, IStageService stageService)
         {
             _dataService = dataService;
             _contentService = contentService;
             _stageService = stageService;
-            _versionService = versionService;
 
             _contents = _contentService.GetAll().ConvertTo<ContentDTO, Content>()
                                        .MergeWith(_dataService.GetAll(), content => content.Id, data => data.Id)

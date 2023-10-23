@@ -38,7 +38,7 @@ namespace ProgFlowManager.API.Controllers
             _languageService = languageService;
             _versionService = versionService;
 
-            _softwares = _softwareService.GetAll().ToDTO<SoftwareDTO, Software>()
+            _softwares = _softwareService.GetAll().ConvertTo<SoftwareDTO, Software>()
                                          .MergeManyToMany<SoftwareDTO, CategoryDTO, SoftwareCategory, Category>(
                                                         software => software.Categories,
                                                         _softwareCategoryService.GetAllById<Software>,

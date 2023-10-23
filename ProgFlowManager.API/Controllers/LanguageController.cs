@@ -21,7 +21,7 @@ namespace ProgFlowManager.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            try { return Ok(_languageService.GetAll().ToDTO<LanguageDTO, Language>()); }
+            try { return Ok(_languageService.GetAll().ConvertTo<LanguageDTO, Language>()); }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
         [HttpGet("{id}")]
@@ -29,7 +29,7 @@ namespace ProgFlowManager.API.Controllers
         {
             if (_languageService.GetById(id) is null) return NotFound();
 
-            try { return Ok(_languageService.GetById(id).ToDTO<LanguageDTO, Language>()); }
+            try { return Ok(_languageService.GetById(id).ConvertTo<LanguageDTO, Language>()); }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
     }

@@ -13,15 +13,8 @@ namespace ProgFlowManager.DAL.Services.Programs
 {
     public class SoftwareService : Creatable<Software>, ISoftwareService
     {
-        private readonly IDataService _dataService;
-        public SoftwareService(IConfiguration config, IDataService dataService) : base(config)
+        public SoftwareService(IConfiguration config) : base(config)
         {
-            _dataService = dataService;
-        }
-
-        public override IEnumerable<Software> GetAll()
-        {
-            return base.GetAll().MergeWith(_dataService.GetAll(), software => software.Id, data => data.Id);
         }
     }
 }

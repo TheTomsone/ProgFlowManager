@@ -30,8 +30,16 @@ namespace ProgFlowManager.API.Controllers
             _contentService = contentService;
             _stageService = stageService;
 
-            _versions = _versionService.GetAll().ToDTO<VersionNbDTO, VersionNb>()
+            _versions = _versionService.GetAll().ConvertTo<VersionNbDTO, VersionNb>()
+                                       .MergeWith(_dataService.GetAll(), version => version.Id, data => data.Id)
                                        .MergeOne<VersionNbDTO, StageDTO, Stage, VersionNb>(_versionService.GetById, version => version.StageId, _stageService.GetById);
+
+            _versionsFull = _versions.ConvertTo<VersionNbFullDTO, VersionNbDTO>()
+                                     .MergeManyToOne(version => version.Contents, id => _contentService.GetAllById<VersionNb>(id)
+                                                                                                       .ConvertTo<ContentDTO, Content>()
+                                                                                                       .MergeWith(_dataService.GetAll(), content => content.Id, data => data.Id)
+                                                                                                       .MergeOne<ContentDTO, StageDTO, Stage, Content>(_contentService.GetById, content => content.StageId, _stageService.GetById)
+                                                                                                       .ToList());
 
             //_versionsFull = _versions.ConvertTo<VersionNbFullDTO, VersionNbDTO>()
             //                         .MergeManyToOne(version => version.Contents, id => _contentService.GetAllById<VersionNb>(id).ToList());

@@ -17,12 +17,5 @@ namespace ProgFlowManager.DAL.Models.Programs
         public DateTime? Release {  get; set; }
         public int StageId { get; set; }
         public int SoftwareId { get; set; }
-
-        public VersionNb()
-        {
-            Goal = null;
-            Release = null;
-            StageId = 210;
-        }
     }
 }
