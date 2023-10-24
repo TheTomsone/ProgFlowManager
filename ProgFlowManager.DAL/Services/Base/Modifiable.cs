@@ -39,6 +39,8 @@ namespace ProgFlowManager.DAL.Services.Base
             PropertyInfo propId = props[0];
             StringBuilder sb = new($"UPDATE [dbo].[{FullTablename}] SET ");
 
+            props = props.Where(prop => prop.GetValue(model) is not null).ToArray();
+
             for (int i = 1; i < props.Length; i++)
             {
                 sb.Append($"[{Prefix}_{props[i].Name.UnderscoreBetweenLowerUpper().ToLower()}] = @{props[i].Name}");

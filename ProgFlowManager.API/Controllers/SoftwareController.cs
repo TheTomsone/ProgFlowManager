@@ -75,9 +75,6 @@ namespace ProgFlowManager.API.Controllers
                                                                                                                                                                              .MergeOne<ContentDTO, StageDTO, Stage, Content>(_contentService.GetById, content => content.StageId, _stageService.GetById)
                                                                                                                                                                              .ToList())
                                                                                                            .ToList());
-
-            //_softwaresFull = _softwares.ConvertTo<SoftwareFullDTO, SoftwareDTO>()
-            //                           .MergeManyToOne(software => software.Versions, id => _versionService.GetAllById<Software>(id).ToList());
         }
 
         [HttpPost]
