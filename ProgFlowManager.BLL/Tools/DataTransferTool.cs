@@ -26,8 +26,10 @@ namespace ProgFlowManager.BLL.Tools
                 if (otherProp is null) continue;
                 if (!prop.CanRead && !prop.CanWrite) continue;
                 if (isMerge && prop.GetValue(source) is not null) continue;
-                if (otherProp.CanRead && prop.PropertyType == otherProp.PropertyType)
-                    prop.SetValue(source, otherProp.GetValue(other));
+                if (otherProp.CanRead && prop.PropertyType != otherProp.PropertyType) continue;
+                if (!isMerge && otherProp.GetValue(other) is null) continue;
+
+                prop.SetValue(source, otherProp.GetValue(other));
             }
 
             return source;
@@ -134,17 +136,17 @@ namespace ProgFlowManager.BLL.Tools
                 yield return item;
             }
         }
-        public static IEnumerable<TModel> MergeManyToOne<TModel, TRelated>(
+        public static IEnumerable<TModel> MergeManyToOne<TModel, TRelated, TBaseModel>(
             this IEnumerable<TModel> source,
             Func<TModel, List<TRelated>> relatedEnumerableSelector,
-            Func<int, List<TRelated>> relatedFetcher)
+            Func<int, string, List<TRelated>> relatedFetcher)
             where TModel : IModel
             where TRelated : IModel
         {
             foreach (TModel item in source)
             {
                 List<TRelated> relateds = relatedEnumerableSelector(item);
-                List<TRelated> relatedModels = relatedFetcher(item.Id);
+                List<TRelated> relatedModels = relatedFetcher(item.Id, typeof(TBaseModel).Name);
 
                 foreach (TRelated relatedModel in relatedModels)
                     relateds.Add(relatedModel);
@@ -166,10 +168,10 @@ namespace ProgFlowManager.BLL.Tools
         /// <param name="relationToRelatedId"></param>
         /// <param name="relatedFetcher"></param>
         /// <returns></returns>
-        public static IEnumerable<TModel> MergeManyToMany<TModel, TRelated, TRelation, TRelatedModel>(
+        public static IEnumerable<TModel> MergeManyToMany<TModel, TRelated, TRelation, TRelatedModel, TBaseModel>(
             this IEnumerable<TModel> source,
             Func<TModel, List<TRelated>> relatedEnumerableSelector,
-            Func<int, IEnumerable<TRelation>> relationFetcher,
+            Func<int, string, IEnumerable<TRelation>> relationFetcher,
             Func<TRelation, int> relationToRelatedId,
             Func<int, TRelatedModel> relatedFetcher)
             where TModel : IModel
@@ -180,19 +182,19 @@ namespace ProgFlowManager.BLL.Tools
             foreach (TModel item in source)
             {
                 List<TRelated> relateds = relatedEnumerableSelector(item);
-                IEnumerable<TRelation> relations = relationFetcher(item.Id);
+                IEnumerable<TRelation> relations = relationFetcher(item.Id, typeof(TBaseModel).Name);
 
-                Console.WriteLine("\nBefore :");
-                foreach (PropertyInfo prop in typeof(TModel).GetProperties())
-                    Console.WriteLine($"{typeof(TModel).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(item)}");
-                Console.WriteLine($"{typeof(TRelated).Name} relateds : ");
-                foreach (TRelated related in relateds)
-                    foreach (PropertyInfo prop in typeof(TRelated).GetProperties())
-                        Console.WriteLine($"{typeof(TRelated).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(related)}");
-                Console.WriteLine($"{typeof(TRelated).Name} relations : ");
-                foreach (TRelation relation in relations)
-                    foreach (PropertyInfo prop in typeof(TRelation).GetProperties())
-                        Console.WriteLine($"{typeof(TRelation).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(relation)}");
+                //Console.WriteLine("\nBefore :");
+                //foreach (PropertyInfo prop in typeof(TModel).GetProperties())
+                //    Console.WriteLine($"{typeof(TModel).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(item)}");
+                //Console.WriteLine($"{typeof(TRelated).Name} relateds : ");
+                //foreach (TRelated related in relateds)
+                //    foreach (PropertyInfo prop in typeof(TRelated).GetProperties())
+                //        Console.WriteLine($"{typeof(TRelated).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(related)}");
+                //Console.WriteLine($"{typeof(TRelated).Name} relations : ");
+                //foreach (TRelation relation in relations)
+                //    foreach (PropertyInfo prop in typeof(TRelation).GetProperties())
+                //        Console.WriteLine($"{typeof(TRelation).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(relation)}");
 
                 foreach (TRelation relation in relations)
                 {
@@ -201,17 +203,17 @@ namespace ProgFlowManager.BLL.Tools
                     relateds.Add(relatedFetcher(relatedId).ConvertTo<TRelated, TRelatedModel>());
                 }
 
-                Console.WriteLine("\nBefore :");
-                foreach (PropertyInfo prop in typeof(TModel).GetProperties())
-                    Console.WriteLine($"{typeof(TModel).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(item)}");
-                Console.WriteLine($"{typeof(TRelated).Name} relateds : ");
-                foreach (TRelated related in relateds)
-                    foreach (PropertyInfo prop in typeof(TRelated).GetProperties())
-                        Console.WriteLine($"{typeof(TRelated).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(related)}");
-                Console.WriteLine($"{typeof(TRelated).Name} sources : ");
-                foreach (TRelated related in relatedEnumerableSelector(item))
-                    foreach (PropertyInfo prop in typeof(TRelated).GetProperties())
-                        Console.WriteLine($"{typeof(TRelated).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(related)}");
+                //Console.WriteLine("\nBefore :");
+                //foreach (PropertyInfo prop in typeof(TModel).GetProperties())
+                //    Console.WriteLine($"{typeof(TModel).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(item)}");
+                //Console.WriteLine($"{typeof(TRelated).Name} relateds : ");
+                //foreach (TRelated related in relateds)
+                //    foreach (PropertyInfo prop in typeof(TRelated).GetProperties())
+                //        Console.WriteLine($"{typeof(TRelated).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(related)}");
+                //Console.WriteLine($"{typeof(TRelated).Name} sources : ");
+                //foreach (TRelated related in relatedEnumerableSelector(item))
+                //    foreach (PropertyInfo prop in typeof(TRelated).GetProperties())
+                //        Console.WriteLine($"{typeof(TRelated).Name} - {prop.PropertyType} {prop.Name} : {prop.GetValue(related)}");
 
                 yield return item;
             }

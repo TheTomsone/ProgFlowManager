@@ -52,24 +52,24 @@ namespace ProgFlowManager.API.Controllers
             _softwares = _softwareService.GetAll().ConvertTo<SoftwareDTO, Software>()
                                          .MergeWith(_dataService.GetAll(), software => software.Id, data => data.Id)
                                          .MergeOne<SoftwareDTO, StageDTO, Stage, Software>(_softwareService.GetById, software => software.StageId, _stageService.GetById)
-                                         .MergeManyToMany<SoftwareDTO, CategoryDTO, SoftwareCategory, Category>(
+                                         .MergeManyToMany<SoftwareDTO, CategoryDTO, SoftwareCategory, Category, Software>(
                                                         software => software.Categories,
-                                                        _softwareCategoryService.GetAllById<Software>,
+                                                        _softwareCategoryService.GetAllById,
                                                         relation => relation.CategoryId,
                                                         _categoryService.GetById)
-                                         .MergeManyToMany<SoftwareDTO, LanguageDTO, SoftwareLanguage, Language>(
+                                         .MergeManyToMany<SoftwareDTO, LanguageDTO, SoftwareLanguage, Language, Software>(
                                                         software => software.Languages,
-                                                        _softwareLanguageService.GetAllById<Software>,
+                                                        _softwareLanguageService.GetAllById,
                                                         relation => relation.LanguageId,
                                                         _languageService.GetById);
 
             _softwaresFull = _softwares.ConvertTo<SoftwareFullDTO, SoftwareDTO>()
-                                       .MergeManyToOne(software => software.Versions, id => _versionService.GetAllById<Software>(id)
+                                       .MergeManyToOne<SoftwareFullDTO, VersionNbFullDTO, Software>(software => software.Versions, (id, relation) => _versionService.GetAllById(id, relation)
                                                                                                            .ConvertTo<VersionNbDTO, VersionNb>()
                                                                                                            .MergeWith(_dataService.GetAll(), version => version.Id, data => data.Id)
                                                                                                            .MergeOne<VersionNbDTO, StageDTO, Stage, VersionNb>(_versionService.GetById, version => version.StageId, _stageService.GetById)
                                                                                                            .ConvertTo<VersionNbFullDTO, VersionNbDTO>()
-                                                                                                           .MergeManyToOne(version => version.Contents, id => _contentService.GetAllById<VersionNb>(id)
+                                                                                                           .MergeManyToOne<VersionNbFullDTO, ContentDTO, VersionNb>(version => version.Contents, (id, relation) => _contentService.GetAllById(id, relation)
                                                                                                                                                                              .ConvertTo<ContentDTO, Content>()
                                                                                                                                                                              .MergeWith(_dataService.GetAll(), content => content.Id, data => data.Id)
                                                                                                                                                                              .MergeOne<ContentDTO, StageDTO, Stage, Content>(_contentService.GetById, content => content.StageId, _stageService.GetById)
@@ -123,7 +123,7 @@ namespace ProgFlowManager.API.Controllers
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
 
-        [HttpPatch]
+        [HttpPatch("{id}")]
         public IActionResult Update(int id, [FromBody] SoftwareForm form)
         {
             if (!ModelState.IsValid) return NotFound(ModelState);
@@ -139,7 +139,7 @@ namespace ProgFlowManager.API.Controllers
             return BadRequest();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             try { if (_softwareService.Delete(id) && _dataService.Delete(id)) return Ok(); }

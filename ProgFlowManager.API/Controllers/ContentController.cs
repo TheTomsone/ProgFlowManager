@@ -33,20 +33,14 @@ namespace ProgFlowManager.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(int id, [FromBody] ContentForm form)
+        public IActionResult Create([FromBody] ContentForm form)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
-                if (_dataService.Create(form.ConvertTo<Data, ContentForm>()))
-                {
-                    Content content = form.ConvertTo<Content, ContentForm>();
-
-                    content.VersionNbId = id;
-
-                    if (_contentService.Create(content)) return Ok();
-                }
+                if (_dataService.Create(form.ConvertTo<Data, ContentForm>()) &&
+                        _contentService.Create(form.ConvertTo<Content, ContentForm>(_dataService.GetLastId()))) return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
 
@@ -70,10 +64,38 @@ namespace ProgFlowManager.API.Controllers
         [HttpGet("byVersion/{id}")]
         public IActionResult GetByVersion(int id)
         {
-            if (_contents.First(c => c.VersionNbId == id) is null) return NotFound();
+            if (_contents.Where(c => c.VersionNbId == id) is null) return NotFound();
 
-            try { return Ok(_contents.First(c => c.VersionNbId == id)); }
+            try { return Ok(_contents.Where(c => c.VersionNbId == id)); }
             catch (Exception ex) { return BadRequest(ex.Message); }
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult Update(int id, [FromBody] ContentForm content)
+        {
+            if (_contentService.GetById(id) is null) return NotFound(id);
+            if (!ModelState.IsValid) return NotFound(ModelState);
+
+            try
+            {
+                if (_dataService.Update(content.ConvertTo<Data, ContentForm>(id)) &&
+                        _contentService.Update(content.ConvertTo<Content, ContentForm>(id)))
+                            return Ok();
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+
+            return BadRequest();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            if (_contentService.GetById(id) is null) return NotFound(id);
+
+            try { if (_contentService.Delete(id) && _dataService.Delete(id)) return Ok(); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+
+            return BadRequest();
         }
     }
 }

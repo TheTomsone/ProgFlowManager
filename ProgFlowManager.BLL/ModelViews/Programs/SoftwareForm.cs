@@ -6,7 +6,6 @@ namespace ProgFlowManager.API.ModelViews.Programs
     {
         [Required]
         public string Name { get; set; }
-        [Required]
         public string Resume { get; set; }
         public DateTime? ETA { get; set; }
         public DateTime Started { get; set; } = DateTime.Now;

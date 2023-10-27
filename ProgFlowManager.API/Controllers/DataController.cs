@@ -41,9 +41,17 @@ namespace ProgFlowManager.API.Controllers
         {
             if (_dataService.GetById(id) is null) return NotFound("No data found");
             if (_dataService.GetById(id).ImageData is null) return NotFound("No image found in this data");
+
+            try { return Ok(_dataService.GetById(id).ImageData); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+        }
+        [HttpGet("{id}/imageType")]
+        public IActionResult GetImageType(int id)
+        {
+            if (_dataService.GetById(id) is null) return NotFound("No data found");
             if (_dataService.GetById(id).ImageMime is null) return NotFound("Error corrupted file extension");
 
-            try { return File(_dataService.GetById(id).ImageData, _dataService.GetById(id).ImageMime); }
+            try { return Ok(_dataService.GetById(id).ImageMime); }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
     }

@@ -40,16 +40,16 @@ namespace ProgFlowManager.API.Controllers
         [HttpGet("bySoftware/{id}")]
         public IActionResult GetBySoftware(int id)
         {
-            if (_softwareLanguageService.GetAllById<Software>(id) is null) return NotFound();
+            if (_softwareLanguageService.GetAllById(id, "Software") is null) return NotFound();
 
-            return Ok(_softwareLanguageService.GetAllById<Software>(id));
+            return Ok(_softwareLanguageService.GetAllById(id, "Software"));
         }
         [HttpGet("byLanguage/{id}")]
         public IActionResult GetByLanguage(int id)
         {
-            if (_softwareLanguageService.GetAllById<Language>(id) is null) return NotFound();
+            if (_softwareLanguageService.GetAllById(id, "Language") is null) return NotFound();
 
-            return Ok(_softwareLanguageService.GetAllById<Language>(id));
+            return Ok(_softwareLanguageService.GetAllById(id, "Language"));
         }
 
         [HttpDelete]

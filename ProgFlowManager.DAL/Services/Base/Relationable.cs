@@ -37,11 +37,11 @@ namespace ProgFlowManager.DAL.Services.Base
             finally { Connection.Close(); }
         }
 
-        public IEnumerable<TModel> GetAllById<TRelation>(int id) where TRelation : class
+        public IEnumerable<TModel> GetAllById(int id, string relation)
         {
             using SqlCommand cmd = Connection.CreateCommand();
             List<TModel> list = new();
-            string sql = $"SELECT * FROM [dbo].[{FullTablename}] WHERE [{Prefix.ToLower()}_{typeof(TRelation).Name.UnderscoreBetweenLowerUpper().ToLower()}_id] = @id";
+            string sql = $"SELECT * FROM [dbo].[{FullTablename}] WHERE [{Prefix.ToLower()}_{relation.UnderscoreBetweenLowerUpper().ToLower()}_id] = @id";
 
             cmd.Parameters.AddWithValue("id", id);
             cmd.CommandText = sql;

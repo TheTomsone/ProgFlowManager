@@ -8,7 +8,7 @@ namespace ProgFlowManager.DAL.Interfaces.Base
 {
     public interface IRelationable<TModel> : ICreatable<TModel> where TModel : class
     {
-        IEnumerable<TModel> GetAllById<TRelation>(int id) where TRelation : class;
+        IEnumerable<TModel> GetAllById(int id, string relation);
         bool DeleteRelation(TModel model);
     }
 }

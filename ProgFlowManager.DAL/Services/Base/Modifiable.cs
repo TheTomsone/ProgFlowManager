@@ -39,9 +39,29 @@ namespace ProgFlowManager.DAL.Services.Base
             PropertyInfo propId = props[0];
             StringBuilder sb = new($"UPDATE [dbo].[{FullTablename}] SET ");
 
-            props = props.Where(prop => prop.GetValue(model) is not null).ToArray();
+            foreach (PropertyInfo prop in props)
+            {
+                Console.WriteLine(prop.Name + " - " + prop.GetValue(model));
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
 
-            for (int i = 1; i < props.Length; i++)
+            props = props.Where(prop =>
+            {
+                var value = prop.GetValue(model);
+
+                if (prop.Name == "Id") return false;
+                if (value is null) return false;
+                if (value is string stringValue && string.IsNullOrEmpty(stringValue)) return false;
+                if (value is int intValue && intValue == 0)return false;
+
+                return true;
+            }).ToArray();
+
+            if (props.Length < 1) return true;
+
+            for (int i = 0; i < props.Length; i++)
             {
                 sb.Append($"[{Prefix}_{props[i].Name.UnderscoreBetweenLowerUpper().ToLower()}] = @{props[i].Name}");
                 cmd.Parameters.AddWithValue(props[i].Name, props[i].GetValue(model));
@@ -50,6 +70,9 @@ namespace ProgFlowManager.DAL.Services.Base
 
             }
             sb.Append($" WHERE {Prefix.ToLower()}_{propId.Name.UnderscoreBetweenLowerUpper().ToLower()} = @{propId.Name}");
+
+            Console.WriteLine(sb.ToString());
+
             cmd.Parameters.AddWithValue(propId.Name, propId.GetValue(model));
             cmd.CommandText = sb.ToString();
 

@@ -35,7 +35,7 @@ namespace ProgFlowManager.API.Controllers
                                        .MergeOne<VersionNbDTO, StageDTO, Stage, VersionNb>(_versionService.GetById, version => version.StageId, _stageService.GetById);
 
             _versionsFull = _versions.ConvertTo<VersionNbFullDTO, VersionNbDTO>()
-                                     .MergeManyToOne(version => version.Contents, id => _contentService.GetAllById<VersionNb>(id)
+                                     .MergeManyToOne<VersionNbFullDTO, ContentDTO, VersionNb>(version => version.Contents, (id, relation) => _contentService.GetAllById(id, relation)
                                                                                                        .ConvertTo<ContentDTO, Content>()
                                                                                                        .MergeWith(_dataService.GetAll(), content => content.Id, data => data.Id)
                                                                                                        .MergeOne<ContentDTO, StageDTO, Stage, Content>(_contentService.GetById, content => content.StageId, _stageService.GetById)
@@ -46,21 +46,15 @@ namespace ProgFlowManager.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(int id, [FromBody] VersionForm form)
+        public IActionResult Create([FromBody] VersionForm form)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             try
             {
-                if (_dataService.Create(form.ConvertTo<Data, VersionForm>()))
-                {
-                    VersionNb version = form.ConvertTo<VersionNb, VersionForm>(_dataService.GetLastId());
-
-                    version.SoftwareId = id;
-
-                    if (_versionService.Create(version))
-                        return Ok();
-                }
+                if (_dataService.Create(form.ConvertTo<Data, VersionForm>()) &&
+                        _versionService.Create(form.ConvertTo<VersionNb, VersionForm>(_dataService.GetLastId())))
+                            return Ok();
             }
             catch (Exception ex) { return BadRequest(ex.Message); }
 
@@ -84,9 +78,9 @@ namespace ProgFlowManager.API.Controllers
         [HttpGet("bySoftware/{id}")]
         public IActionResult GetBySoftware(int id)
         {
-            if (_versions.First(v => v.SoftwareId == id) is null) return NotFound();
+            if (_versions.Where(v => v.SoftwareId == id) is null) return NotFound();
 
-            try { return Ok(_versions.First(v => v.SoftwareId == id)); }
+            try { return Ok(_versions.Where(v => v.SoftwareId == id)); }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
         [HttpGet("details")]
@@ -106,10 +100,39 @@ namespace ProgFlowManager.API.Controllers
         [HttpGet("details/bySoftware/{id}")]
         public IActionResult GetDetailsBySoftware(int id)
         {
-            if (_versionsFull.First(v => v.SoftwareId == id) is null) return NotFound();
+            if (_versionsFull.Where(v => v.SoftwareId == id) is null) return NotFound();
 
-            try { return Ok(_versionsFull.First(v => v.SoftwareId == id)); }
+            try { return Ok(_versionsFull.Where(v => v.SoftwareId == id)); }
             catch (Exception ex) { return BadRequest(ex.Message); }
         }
+
+        [HttpPatch("{id}")]
+        public IActionResult Update(int id, [FromBody] VersionForm version)
+        {
+            if (_versionService.GetById(id) is null) return NotFound();
+            if (!ModelState.IsValid) return BadRequest(version);
+
+            try
+            {
+                if (_dataService.Update(version.ConvertTo<Data, VersionForm>(id)) &&
+                        _versionService.Update(version.ConvertTo<VersionNb, VersionForm>(id)))
+                    return Ok();
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+
+            return BadRequest("Unknown error");
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            if (_versionService.GetById(id) is null) return NotFound(id);
+
+            try { if (_versionService.Delete(id) && _dataService.Delete(id)) return Ok(); }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+
+            return BadRequest("Unknown error");
+        }
+
     }
 }

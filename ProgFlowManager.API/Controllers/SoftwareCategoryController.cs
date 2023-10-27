@@ -38,16 +38,16 @@ namespace ProgFlowManager.API.Controllers
         [HttpGet("bySoftware/{id}")]
         public IActionResult GetBySoftware(int id)
         {
-            if (_softwareCategoryService.GetAllById<Software>(id) is null) return NotFound();
+            if (_softwareCategoryService.GetAllById(id, "Software") is null) return NotFound();
 
-            return Ok(_softwareCategoryService.GetAllById<Software>(id));
+            return Ok(_softwareCategoryService.GetAllById(id, "Software"));
         }
         [HttpGet("byCategory/{id}")]
         public IActionResult GetByCategory(int id)
         {
-            if (_softwareCategoryService.GetAllById<Category>(id) is null) return NotFound();
+            if (_softwareCategoryService.GetAllById(id, "Category") is null) return NotFound();
 
-            return Ok(_softwareCategoryService.GetAllById<Category>(id));
+            return Ok(_softwareCategoryService.GetAllById(id, "Category"));
         }
 
         [HttpDelete]

@@ -6,7 +6,6 @@ namespace ProgFlowManager.API.ModelViews.Programs
     {
         [Required]
         public string Name { get; set; }
-        [Required]
         public string Resume { get; set; }
         [Required]
         public int Major { get; set; }
@@ -18,5 +17,7 @@ namespace ProgFlowManager.API.ModelViews.Programs
         public DateTime? Release { get; set; }
         [Required]
         public int StageId {  get; set; }
+        [Required]
+        public int SoftwareId { get; set; }
     }
 }
